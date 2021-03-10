@@ -1,19 +1,24 @@
 package com.codeGym.service.customer;
 
 import com.codeGym.model.Customer;
+import com.codeGym.model.Province;
+import com.codeGym.service.province.IProvinceService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import com.codeGym.repository.ICustomerRepository;
 
+import javax.persistence.TypedQuery;
 import java.util.List;
 
 @Service
 public class CustomerService implements ICustomerService {
 
     @Autowired
-   private ICustomerRepository customerRepository;
+    private ICustomerRepository customerRepository;
+    @Autowired
+    private IProvinceService provinceService;
 
     @Override
     public List<Customer> findALl() {
@@ -40,8 +45,14 @@ public class CustomerService implements ICustomerService {
         customerRepository.delete(id);
     }
 
+
     @Override
     public List<Customer> findByName(String name) {
-        return null;
+        return customerRepository.findCustomerByName(name);
+    }
+
+    @Override
+    public List<Customer> findAllByProvince(Province province) {
+        return customerRepository.findAllByProvince(province);
     }
 }

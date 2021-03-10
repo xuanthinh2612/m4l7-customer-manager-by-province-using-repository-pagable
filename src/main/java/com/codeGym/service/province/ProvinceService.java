@@ -26,7 +26,7 @@ public class ProvinceService implements IProvinceService {
 
     @Override
     public Province findById(Long id) {
-        return null;
+        return provinceRepository.findOne(id);
     }
 
     @Override
@@ -43,4 +43,6 @@ public class ProvinceService implements IProvinceService {
     public List<Province> findByName(String name) {
         return null;
     }
+
+
 }

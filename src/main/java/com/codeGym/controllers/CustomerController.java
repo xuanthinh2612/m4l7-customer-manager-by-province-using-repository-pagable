@@ -20,13 +20,19 @@ import java.util.List;
 public class CustomerController {
 
     @Autowired
-
     private ICustomerService customerService;
     @Autowired
     private IProvinceService provinceService;
 
+    @ModelAttribute("provinceList")
+    public List<Province> provinceList() {
+        return provinceService.findALl();
+    }
+
+
     @GetMapping("/show")
     public ModelAndView showAll(@PageableDefault(size = 5) Pageable pageable) {
+
         ModelAndView modelAndView = new ModelAndView("list");
         Page<Customer> customerList = customerService.findALl(pageable);
         modelAndView.addObject("customerList", customerList);
@@ -36,10 +42,10 @@ public class CustomerController {
 
     @GetMapping("/create")
     public ModelAndView showCreate() {
+
         ModelAndView modelAndView = new ModelAndView("create");
-        List<Province> provinceList = provinceService.findALl();
+
         modelAndView.addObject("customer", new Customer());
-        modelAndView.addObject("provinceList", provinceList);
 
         return modelAndView;
     }
@@ -51,9 +57,12 @@ public class CustomerController {
     }
 
     @GetMapping("/update/{id}")
+
     public ModelAndView showUpdate(@PathVariable long id) {
+
         ModelAndView modelAndView = new ModelAndView("create");
         modelAndView.addObject("customer", customerService.findById(id));
+
         return modelAndView;
 
     }
@@ -76,5 +85,34 @@ public class CustomerController {
     public String delete(@PathVariable long id) {
         customerService.deleteById(id);
         return "redirect:/home/show";
+    }
+
+    @PostMapping("/search")
+    public ModelAndView resultSearch(@RequestParam String keyWord) {
+        ModelAndView modelAndView = new ModelAndView("list");
+        String name = "%"+keyWord+"%";
+        List<Customer> customerList = customerService.findByName(name);
+        modelAndView.addObject("customerList",customerList);
+        return modelAndView;
+    }
+
+    @GetMapping("/showByProvince/{id}")
+    public ModelAndView showByProvince1(@PathVariable long id){
+        Province province = provinceService.findById(id);
+        List<Customer> customerList = customerService.findAllByProvince(province);
+        ModelAndView modelAndView  = new ModelAndView("listByProvince");
+        modelAndView.addObject("customerList",customerList);
+
+        return modelAndView;
+    }
+    @GetMapping("/showByProvince")
+    public ModelAndView showByProvince2(@RequestParam long province_id){
+
+        Province province = provinceService.findById(province_id);
+        List<Customer> customerList = customerService.findAllByProvince(province);
+        ModelAndView modelAndView  = new ModelAndView("listByProvince");
+        modelAndView.addObject("customerList",customerList);
+
+        return modelAndView;
     }
 }
